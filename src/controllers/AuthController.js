@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import transporter from "../service/emailSender.js";
 
 const generateToken = (user) => {
   return jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "1d"
   });
 };
 
@@ -30,17 +31,29 @@ class AuthController {
       const user = new User({
         name,
         email,
-        password: hashedPassword,
+        password: hashedPassword
       });
 
       await user.save();
 
+      await EmailSender.sendMail({
+        to: email,
+        subject: "Codigo de acesso ✔",
+        text: "Seu codigo de verificação: 123456",
+        html: "<p>Seu codigo de verificação:<b>123456</b></p>"
+      });
+
+      console.log("Message sent:", info.messageId);
+
       return res.status(201).json({
-        message: "Usuário criado com sucesso",
-        token: generateToken(user),
+        message:
+          "Usuário criado com sucesso, o codigo de acesso foi enviado para o email cadastrado",
+        token: generateToken(user)
       });
     } catch (error) {
-      return res.status(500).json({ message: "Erro ao criar usuário" });
+      return res
+        .status(500)
+        .json({ message: "Erro ao criar usuário", error: error });
     }
   }
 
@@ -62,7 +75,7 @@ class AuthController {
 
       return res.json({
         message: "Login bem-sucedido",
-        token: generateToken(user),
+        token: generateToken(user)
       });
     } catch (error) {
       return res.status(500).json({ message: "Erro ao realizar login" });

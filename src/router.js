@@ -8,8 +8,12 @@ const routes = new Router();
 
 routes.get("/search", CardsController.search);
 
-routes.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
+routes.get("/health", async (req, res) => {
+  try {
+    return res.status(200).json({ message: "ok" });
+  } catch (error) {
+    console.error("Error", error);
+  }
 });
 
 routes.post("/user-register", AuthController.register);
