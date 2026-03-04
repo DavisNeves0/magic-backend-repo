@@ -5,7 +5,7 @@
   "description": "Magic card search",
   "main": "index.js",
   "scripts": {
-    "test": "node --env-file=.env --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test": "node --env-file=.env.test --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "nodemon --env-file=.env src/index.js"
   },
   "author": "",
